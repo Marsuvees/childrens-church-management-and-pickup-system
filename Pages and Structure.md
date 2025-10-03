@@ -19,6 +19,7 @@ B --> B2[guardians.html]
 B --> B3[teachers.html]
 B --> B4[login.html]
 B --> B5[signup.html]
+B --> B6[admin.html]
 
 C --> C1[style.css]
 
@@ -28,58 +29,31 @@ C --> C1[style.css]
 
 # Database Structure
 ```mermaid
-graph TB
-
-A{Database}
-A --> B(guardians)
-A --> C(teachers)
-A --> D(children)
-A --> E(log)
-
-B --> B1[ID]
-B --> B2[Name]
-B --> B3[Children_ID]
-  
-C --> C1[ID]
-C --> C2[Name]
-C --> C3[Children under care]
-
-D --> D1[ID]
-D --> D2[Name]
-D --> D3[Age]
-
-E --> E1[Date&Time]
-E --> E2[Child_id]
-
-B3 --> D1
-C3 --> D1
-E2 --> D1
-
-```
-
-
-```mermaid
 flowchart TB
 
     A{Database}
 
     %% Core tables
     A --> B[Guardians]
-    A --> C[Teachers]
+    A --> C[Staff]
     A --> D[Children]
     A --> E[Logs]
     A --> F[Guardian_Child]
     A --> G[Teacher_Child]
+    A --> H[Roaster]
 
     %% Guardians
     B --> B1[Guardian_ID]
     B --> B2[Name]
-    B --> B3[ContactInfo]
+    B --> B3[PhoneNumber]
+    B --> B4[Email]
 
-    %% Teachers
-    C --> C1[Teacher_ID]
+    %% Staff
+    C --> C1[Staff_ID]
     C --> C2[Name]
-    C --> C3[Subject]
+    C --> C3[ClassCode]
+    C --> C4[IsAdmin]
+    C --> C5[IsTeacher]
 
     %% Children
     D --> D1[Child_ID]
@@ -90,18 +64,27 @@ flowchart TB
     E --> E1[Log_ID]
     E --> E2[Child_ID]
     E --> E3[DateTime]
-    E --> E4[Event]
-    E --> E5[RecordedBy]
+    E --> E5[Event]
+    E --> E6[SignedInBy]
+    E --> E7[OfferingAmount]
+	E --> E8[SignedOutBy]
+
 
     %% Guardian_Child
     F --> F1[Guardian_ID]
     F --> F2[Child_ID]
 
     %% Teacher_Child
-    G --> G1[Teacher_ID]
+    G --> G1[Staff_ID]
     G --> G2[Child_ID]
     G --> G3[StartDate]
     G --> G4[EndDate]
+
+	%% Roaster
+	H --> H1[DateTime]
+	H --> H2[Curriculum]
+	H --> H3[ClassCode]
+	H --> H4[TeacherCode]
 
     %% Relationships
     F1 --> B1
@@ -111,5 +94,6 @@ flowchart TB
     G2 --> D1
 
     E2 --> D1
+    
 
 ```
