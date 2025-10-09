@@ -29,71 +29,129 @@ C --> C1[style.css]
 
 # Database Structure
 ```mermaid
-flowchart TB
+erDiagram
+    GUARDIANS {
+        int Guardian_ID PK
+        string Name
+        string PhoneNumber
+        string Email
+    }
 
-    A{Database}
+    STAFF {
+        int Staff_ID PK
+        string UUID UK
+        string Name
+        string ClassCode
+        bool IsAdmin
+        bool IsTeacher
+    }
 
-    %% Core tables
-    A --> B[Guardians]
-    A --> C[Staff]
-    A --> D[Children]
-    A --> E[Logs]
-    A --> F[Guardian_Child]
-    A --> G[Teacher_Child]
-    A --> H[Roaster]
+    CHILDREN {
+        int Child_ID PK
+        string Name
+        date Birthdate
+    }
 
-    %% Guardians
-    B --> B1[Guardian_ID]
-    B --> B2[Name]
-    B --> B3[PhoneNumber]
-    B --> B4[Email]
+    LOGS {
+        int Log_ID PK
+        int Child_ID FK
+        datetime DateTime
+        string Event
+        int SignedInBy FK
+        int SignedOutBy FK
+        float OfferingAmount
+    }
 
-    %% Staff
-    C --> C1[Staff_ID]
-    C --> C2[Name]
-    C --> C3[ClassCode]
-    C --> C4[IsAdmin]
-    C --> C5[IsTeacher]
+    ROASTER {
+        datetime DateTime PK
+        string Curriculum
+        string ClassCode
+        string TeacherCode FK
+    }
 
-    %% Children
-    D --> D1[Child_ID]
-    D --> D2[Name]
-    D --> D3[Birthdate]
+    GUARDIAN_CHILD {
+        int Guardian_ID FK
+        int Child_ID FK
+    }
 
-    %% Logs
-    E --> E1[Log_ID]
-    E --> E2[Child_ID]
-    E --> E3[DateTime]
-    E --> E5[Event]
-    E --> E6[SignedInBy]
-    E --> E7[OfferingAmount]
-	E --> E8[SignedOutBy]
+    TEACHER_CHILD {
+        int Staff_ID FK
+        int Child_ID FK
+    }
 
+    GUARDIANS ||--o{ GUARDIAN_CHILD : has
+    CHILDREN ||--o{ GUARDIAN_CHILD : has
 
-    %% Guardian_Child
-    F --> F1[Guardian_ID]
-    F --> F2[Child_ID]
+    CHILDREN ||--o{ LOGS : has
+    STAFF ||--o{ LOGS : signs_in_out
 
-    %% Teacher_Child
-    G --> G1[Staff_ID]
-    G --> G2[Child_ID]
-    G --> G3[StartDate]
-    G --> G4[EndDate]
+    STAFF ||--o{ ROASTER : assigned_to
 
-	%% Roaster
-	H --> H1[DateTime]
-	H --> H2[Curriculum]
-	H --> H3[ClassCode]
-	H --> H4[TeacherCode]
+```
 
-    %% Relationships
-    F1 --> B1
-    F2 --> D1
+```mermaid
+classDiagram
+    class Guardians {
+        +int Guardian_ID
+        +string Name
+        +string PhoneNumber
+        +string Email
+        +addGuardian()
+        +getGuardian()
 
-    G1 --> C1
-    G2 --> D1
-
-    E2 --> D1
+    }
+    class Staff {
+        +int Staff_ID
+        +string Name
+        +string ClassCode
+        +bool IsAdmin
+        +bool IsTeacher
+    }
     
+    class Children {
+        +int Child_ID
+        +string Name
+        +date Birthdate
+        +addChild()
+    }
 
+    class Logs {
+        +int Log_ID
+        +int Child_ID
+        +datetime DateTime
+        +string Event
+        +int SignedInBy
+        +float OfferingAmount
+        +int SignedOutBy
+    }
+
+    class Roaster {
+        +datetime DateTime
+        +string Curriculum
+        +string ClassCode
+        +string TeacherCode
+    }
+
+```
+
+```mermaid
+sequenceDiagram
+    participant G as Guardian
+    participant S as Staff
+    participant C as Child
+    participant L as Logs
+    participant DB as Database
+
+    G->>S: Request to sign in/out child
+    S->>DB: Verify guardian and child details
+    DB-->>S: Return verification status
+    alt Verified
+        S->>L: Create log entry for sign-in/out
+        L->>DB: Save log entry
+        DB-->>L: Confirm log saved
+        L-->>S: Log entry created successfully
+        S-->>G: Confirm child signed in/out
+    else Not Verified
+        S-->>G: Deny sign-in/out request
+    end
 ```
