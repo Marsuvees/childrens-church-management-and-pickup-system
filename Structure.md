@@ -70,12 +70,9 @@ erDiagram
     }
 
     GUARDIAN_CHILD {
+        int ID
+        str Guardian_Child_ID UK
         int Guardian_ID FK
-        int Child_ID FK
-    }
-
-    TEACHER_CHILD {
-        int Staff_ID FK
         int Child_ID FK
     }
 
@@ -132,26 +129,4 @@ classDiagram
         +string TeacherCode
     }
 
-```
-
-```mermaid
-sequenceDiagram
-    participant G as Guardian
-    participant S as Staff
-    participant C as Child
-    participant L as Logs
-    participant DB as Database
-
-    G->>S: Request to sign in/out child
-    S->>DB: Verify guardian and child details
-    DB-->>S: Return verification status
-    alt Verified
-        S->>L: Create log entry for sign-in/out
-        L->>DB: Save log entry
-        DB-->>L: Confirm log saved
-        L-->>S: Log entry created successfully
-        S-->>G: Confirm child signed in/out
-    else Not Verified
-        S-->>G: Deny sign-in/out request
-    end
 ```
