@@ -35,6 +35,7 @@ erDiagram
         string Name
         string PhoneNumber
         string Email
+        string G_C_code
     }
 
     STAFF {
@@ -50,6 +51,7 @@ erDiagram
         int Child_ID PK
         string Name
         date Birthdate
+        string G_C_code
     }
 
     LOGS {
@@ -71,12 +73,26 @@ erDiagram
 
     GUARDIAN_CHILD {
         int ID
-        str Guardian_Child_ID UK
-        int Guardian_ID FK
-        int Child_ID FK
+        int Guardian_ID FK "UK"
+        int Child_ID FK "UK"
+        string G_C_code
     }
 
-    GUARDIANS ||--o{ GUARDIAN_CHILD : has
+    VERIFICATION_CODES {
+        int Code_ID PK
+        string G_C_Code FK 
+        string VerificationCode
+        datetime RequestedAt
+        datetime ExpiresAt
+        bool IsUsed
+        int UsedByStaff_ID FK
+    }
+
+    GUARDIANS ||--o{ VERIFICATION_CODES : requests
+    CHILDREN ||--o{ VERIFICATION_CODES : for
+    STAFF ||--o{ VERIFICATION_CODES : verifies
+
+    GUARDIANS ||--o{ GUARDIAN_CHILD: has
     CHILDREN ||--o{ GUARDIAN_CHILD : has
 
     CHILDREN ||--o{ LOGS : has
@@ -93,6 +109,7 @@ classDiagram
         +string Name
         +string PhoneNumber
         +string Email
+        +string G_C_code
         +addGuardian()
         +getGuardian()
 
@@ -109,6 +126,7 @@ classDiagram
         +int Child_ID
         +string Name
         +date Birthdate
+        +string G_C_code
         +addChild()
     }
 
