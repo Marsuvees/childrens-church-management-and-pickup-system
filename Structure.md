@@ -30,12 +30,24 @@ C --> C1[style.css]
 # Database Structure
 ```mermaid
 erDiagram
+    FAMILY {
+        int Family_ID PK
+        datetime CreatedAt
+    }
+
     GUARDIANS {
         int Guardian_ID PK
         string Name
         string PhoneNumber
         string Email
-        string G_C_code
+        string Family_ID FK
+    }
+
+    CHILDREN {
+        int Child_ID PK
+        string Name
+        date Birthdate
+        string Family_ID FK
     }
 
     STAFF {
@@ -45,13 +57,6 @@ erDiagram
         string ClassCode
         bool IsAdmin
         bool IsTeacher
-    }
-
-    CHILDREN {
-        int Child_ID PK
-        string Name
-        date Birthdate
-        string G_C_code
     }
 
     LOGS {
@@ -64,23 +69,16 @@ erDiagram
         float OfferingAmount
     }
 
-    ROASTER {
+    ROSTER {
         datetime DateTime PK
         string Curriculum
         string ClassCode
-        string TeacherCode FK
-    }
-
-    GUARDIAN_CHILD {
-        int ID
-        int Guardian_ID FK "UK"
-        int Child_ID FK "UK"
-        string G_C_code
+        int Staff_ID FK
     }
 
     VERIFICATION_CODES {
         int Code_ID PK
-        string G_C_Code FK 
+        string Family_ID FK
         string VerificationCode
         datetime RequestedAt
         datetime ExpiresAt
@@ -88,18 +86,13 @@ erDiagram
         int UsedByStaff_ID FK
     }
 
-    GUARDIANS ||--o{ VERIFICATION_CODES : requests
-    CHILDREN ||--o{ VERIFICATION_CODES : for
-    STAFF ||--o{ VERIFICATION_CODES : verifies
-
-    GUARDIANS ||--o{ GUARDIAN_CHILD: has
-    CHILDREN ||--o{ GUARDIAN_CHILD : has
-
+    FAMILY ||--o{ GUARDIANS : includes
+    FAMILY ||--o{ CHILDREN : includes
+    FAMILY ||--o{ VERIFICATION_CODES : linked_to
+    STAFF  ||--o{ VERIFICATION_CODES : verifies
     CHILDREN ||--o{ LOGS : has
     STAFF ||--o{ LOGS : signs_in_out
-
-    STAFF ||--o{ ROASTER : assigned_to
-
+    STAFF ||--o{ ROSTER : assigned_to
 ```
 
 ```mermaid
