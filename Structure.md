@@ -43,7 +43,7 @@ erDiagram
         string Family_ID FK
     }
 
-    CHILDREN {
+    CHILD S {
         int Child_ID PK
         string Name
         date Birthdate
@@ -64,9 +64,8 @@ erDiagram
         int Child_ID FK
         datetime DateTime
         string Event
-        int SignedInBy FK
-        int SignedOutBy FK
-        float OfferingAmount
+        int SignedInBy 
+        int SignedOutBy
     }
 
     ROSTER {
